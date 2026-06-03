@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba Login</title>
+
+    <link rel="stylesheet" href="css/style.css"> 
+</head>
+
+<body>
+
+    <h1>Consultas a la API de Luis</h1>
+
+    <pre id="resultado">Cargando...</pre>
+
+    <section class="seccion">
+        <h3>Roles</h3>
+        <div id="resultado1" class="contenedor-tarjetas">
+            Cargando...
+        </div>
+    </section>
+
+    <section class="seccion">
+        <h3>Usarios</h3>
+        <div id="resultado2" class="contenedor-tarjetas">
+            Cargando...
+        </div>
+    </section>
+
+    <section class=""seccion>
+        <h4>Zonas</h4>
+        <div id="resultado3" class="contenedor-tarjetas">
+            Cargando...
+        </div>
+    </section>
+
+    <section>
+        <h4>Hoteles</h4>
+        <pre id="resultado4">Cargando...</pre>
+    </section>
+    
+
+    <script>
+        const resultado = document.getElementById("resultado");
+        const resultado1 = document.getElementById("resultado1");
+        const resultado2 = document.getElementById("resultado2");
+        const resultado3 = document.getElementById("resultado3");
+        const resultado4 = document.getElementById("resultado4");
+
+        async function login() {
+            try {
+                const respuesta = await fetch("/login", {
+                    method: "POST",
+                    credentials: "include"
+                });
+
+                const data = await respuesta.json();
+
+                resultado.textContent = JSON.stringify(data, null, 2);
+
+                console.log("Respuesta del login:", data);
+
+                return data;
+
+            } catch (error) {
+                resultado.textContent = "Error: " + error.message;
+                console.log("Error en navegador:", error);
+            }
+        }
+
+        async function consultarRoles() {
+            const respuesta = await fetch("/roles", {
+                method: "GET",
+                credentials: "include"
+            });
+
+            const data = await respuesta.json();
+            const roles = JSON.parse(data.respuesta);
+
+            let html = "";
+
+            roles.forEach(rol => {
+                html += `
+                    <div class="tarjeta">
+                        <span class="badge"> ID: ${rol.id} </span>
+                        <p> <strong>Nombre de rol: </strong>${rol.nombre_rol} </p>
+                        <p> <strong>Descripción: </strong>${rol.comentario_rol} </p> 
+                    </div>
+                `;
+            });
+
+            resultado1.innerHTML = html;
+        }
+
+
+
+        async function consultarUsuarios() {
+            const respuesta = await fetch("/usuarios", {
+                method: "GET",
+                credentials: "include"
+            });
+
+            const data = await respuesta.json();
+            const usuarios = JSON.parse(data.respuesta);
+
+            let html = "";
+
+            usuarios.forEach(usuario => {
+                html += `
+                    <div class="tarjeta">
+                        <span class="badge"> ID: ${usuario.id} </span>
+                        <p> <strong> Ultima conexion: </strong> ${usuario.last_login} </p>
+                        <p> <strong> Correo: </strong> ${usuario.correo_usuario} </p>
+                        <p> <strong> ID Rol: </strong>  ${usuario.id_rol} </p>
+                        <p> <strong> Descripción: </strong>  ${usuario.rol_descripcion} </p>
+                        <p> <strong> Activo: </strong>  ${usuario.is_active} </p>
+                    </div>
+                `;
+            });
+            resultado2.innerHTML = html;
+
+        }
+
+
+        async function consultarZonas() {
+            const respuesta = await fetch("/zonas", {
+                method: "GET",
+                credentials: "include"
+            });
+
+            const data = await respuesta.json();
+            const zonas = JSON.parse(data.respuesta);
+
+            let html = "";
+
+            zonas.forEach(zona => {
+                html += `
+                    <div class="tarjeta">
+                        <span class="badge"> ID: ${zona.id} </span>
+                        <p> <strong>Nombre de la zona: </strong> ${zona.nombre_zona} </p>
+                    </div>
+                `;
+            });
+            resultado3.innerHTML = html;
+
+        }
+
+
+        async function consultarHoteles() {
+            const respuesta = await fetch("/hoteles", {
+                method: "GET",
+                credentials: "include"
+            });
+
+            const data = await respuesta.json();
+            const hoteles = JSON.parse(data.respuesta);
+
+            let html = "";
+
+            hoteles.forEach(hotel => {
+                html += `
+                    <div class="tarjeta">
+                        <span class="badge"> ID: ${hotel.id} </span>
+                        <p> <strong> Nombre del hotel:</strong> ${hotel.nombre_hotel} </p>
+                        <p> <strong> ID de la zona:</strong> ${hotel.id_zona} </p>
+                `;
+            });
+            resultado4.innerHTML = html;
+        }
+
+
+
+
+        async function iniciar() {
+            const loginData = await login();
+
+            if (loginData.cookieGuardada) {
+                await consultarRoles();
+                await consultarUsuarios();
+                await consultarZonas();
+                await consultarHoteles();
+            } else {
+                resultado.textContent = "No se consultaron roles porque no se guardo la cookie";
+            }
+        }
+
+        iniciar();
+    </script>
+
+</body>
+
+</html>

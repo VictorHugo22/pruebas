@@ -1,0 +1,61 @@
+app.get("/lugares", async (req, res) => {
+  const respuestaApi = await fetch(API_LUGARES_URL, {
+    method: "GET",
+    headers: {
+      Cookie: cookieSesion
+    }
+  });
+
+  const texto = await respuestaApi.text();
+
+  res.json({
+    status: respuestaApi.status,
+    ok: respuestaApi.ok,
+    respuesta: texto
+  });
+});
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Prueba API</title>
+</head>
+<body>
+
+  <h1>Prueba de login</h1>
+
+  <button onclick="login()">Login</button>
+  <button onclick="consultarLugares()">Consultar lugares</button>
+
+  <pre id="resultado"></pre>
+
+  <script>
+    const resultado = document.getElementById("resultado");
+
+    async function login() {
+      const respuesta = await fetch("/login", {
+        method: "POST",
+        credentials: "include"
+      });
+
+      const data = await respuesta.json();
+
+      resultado.textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function consultarLugares() {
+      const respuesta = await fetch("/lugares", {
+        method: "GET",
+        credentials: "include"
+      });
+
+      const data = await respuesta.json();
+
+      resultado.textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+
+</body>
+</html>
