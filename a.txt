@@ -59,3 +59,20 @@ app.get("/lugares", async (req, res) => {
 
 </body>
 </html>
+
+
+
+
+let html = "";
+
+            roles.forEach(rol => {
+                html += `
+                    <div class="tarjeta">
+                        <span class="badge"> ID: ${rol.id} </span>
+                        <p> <strong>Nombre de rol: </strong>${rol.nombre_rol} </p>
+                        <p> <strong>Descripción: </strong>${rol.comentario_rol} </p> 
+                    </div>
+                `;
+            });
+
+            resultado1.innerHTML = html;
