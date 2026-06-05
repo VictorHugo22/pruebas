@@ -12,7 +12,7 @@
 
     <h1>Consultas a la API de Luis</h1>
 
-    <pre id="resultado">Cargando...</pre>
+    <pre id="resultadoLogin">Cargando...</pre>
 
     <section class="seccion">
         <h3>Roles</h3>
@@ -28,7 +28,7 @@
         </div>
     </section>
 
-    <section class=""seccion>
+    <section class="seccion">
         <h4>Zonas</h4>
         <div id="resultado3" class="contenedor-tarjetas">
             Cargando...
@@ -37,12 +37,14 @@
 
     <section>
         <h4>Hoteles</h4>
-        <pre id="resultado4">Cargando...</pre>
+        <div id="resultado4" class="contenedor-tarjetas">
+            Cargando...
+        </div>
     </section>
     
 
-    <!-- <script>
-        const resultado = document.getElementById("resultado");
+    <script>
+        const resultadoLogin = document.getElementById("resultadoLogin");
         const resultado1 = document.getElementById("resultado1");
         const resultado2 = document.getElementById("resultado2");
         const resultado3 = document.getElementById("resultado3");
@@ -52,19 +54,19 @@
             try {
                 const respuesta = await fetch("/login", {
                     method: "POST",
-                    credentials: "include"
+                    credentials: "include" //incluye cookies en la peticion y acepta cookies que vengan en la respuesta
                 });
 
                 const data = await respuesta.json();
 
-                resultado.textContent = JSON.stringify(data, null, 2);
+                resultadoLogin.textContent = JSON.stringify(data, null, 2); // .stringify convierte un objeto en una cadena de texto con formato JSON
 
                 console.log("Respuesta del login:", data);
 
                 return data;
 
             } catch (error) {
-                resultado.textContent = "Error: " + error.message;
+                resultadoLogin.textContent = "Error: " + error.message;
                 console.log("Error en navegador:", error);
             }
         }
@@ -164,6 +166,7 @@
                         <span class="badge"> ID: ${hotel.id} </span>
                         <p> <strong> Nombre del hotel:</strong> ${hotel.nombre_hotel} </p>
                         <p> <strong> ID de la zona:</strong> ${hotel.id_zona} </p>
+                    </div>
                 `;
             });
             resultado4.innerHTML = html;
@@ -186,9 +189,8 @@
         }
 
         iniciar();
-    </script> -->
+    </script>
 
-    <script type="module" src="js/main.js"></script>
 
 </body>
 
